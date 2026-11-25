@@ -1,6 +1,7 @@
 import { checkCircuit } from '../diagnostics';
 import type { CheckComponent, CheckWire } from '../diagnostics';
 import { render } from './render';
+import { loadCompleted } from './actions';
 import { renderDock } from './dock';
 import { button, node, text } from './dom';
 import { labels } from './labels';
@@ -55,7 +56,7 @@ export function installHelp() {
     state.search.type = 'search';
     state.search.oninput = () => {
       state.query = state.search.value;
-      if (state.current !== 'components' && state.current !== 'recipes')
+      if (!['start', 'components', 'recipes', 'courses', 'projects'].includes(state.current))
         state.current = 'components';
       render();
     };
@@ -142,6 +143,7 @@ export function installHelp() {
       attributes: true,
       attributeFilter: ['lang'],
     });
+    loadCompleted();
     localize();
     state.panel.addEventListener('keydown', (event) => {
       if (event.key === 'Escape') {

@@ -29,7 +29,7 @@ This is an **incremental modernization of BOOLR, not a UI rewrite**. The dark ma
 - **Three platforms** — static browser build, Electron desktop, Capacitor Android/iOS.
 - **A typed safety boundary** — strict TypeScript for storage, board validation, scheduling, expressions, rendering, help, localization, and input normalization.
 - **Three languages** — English, العربية, and مصري, with RTL, localized dialogs/help/diagnostics, and a bundled Arabic font.
-- **Teaching tools** — searchable component guide, eight worked circuits, dashed ghosts, structural circuit checks, contextual tips, and a pinned recipe dock.
+- **Teaching tools** — searchable component guide, 23 worked circuits, 5 short courses, 14 buildable example projects, dashed ghosts, structural circuit checks, contextual tips, and a pinned recipe dock.
 - **Real touch support** — Interact/Move/Pan/Select tools, pinch and two-finger navigation, long press, double tap, and responsive dialogs.
 - **Portable boards** — a local board library plus validated `.board` import/export. No account, database, or backend.
 
