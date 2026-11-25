@@ -128,6 +128,184 @@ export const ghostDiagrams: Record<string, GhostDiagram> = {
       [2, 3],
     ],
   },
+  not: {
+    parts: [node('Input', 'A', 0, 0), node('NOT', 'NOT', 5, 0, 1), node('LED', 'L', 8, 0, 1)],
+    links: [
+      [0, 1],
+      [1, 2],
+    ],
+  },
+  andor: {
+    parts: [
+      node('Input', 'A', 0, 0),
+      node('Input', 'B', 0, 4),
+      node('AND', 'AND', 5, 0, 2, 2),
+      node('OR', 'OR', 5, 4, 2, 2),
+      node('LED', 'AND', 10, 0, 1),
+      node('LED', 'OR', 10, 4, 1),
+    ],
+    links: [
+      [0, 2],
+      [1, 2, 0, 1],
+      [0, 3],
+      [1, 3, 0, 1],
+      [2, 4],
+      [3, 5],
+    ],
+  },
+  xor: {
+    parts: [
+      node('Input', 'A', 0, 0),
+      node('Input', 'B', 0, 3),
+      node('XOR', 'XOR', 5, 0, 2, 2),
+      node('LED', 'DIFF', 10, 0, 1),
+    ],
+    links: [
+      [0, 2],
+      [1, 2, 0, 1],
+      [2, 3],
+    ],
+  },
+  button: {
+    parts: [node('Button', 'PRESS', 0, 0), node('LED', 'LAMP', 5, 0, 1)],
+    links: [[0, 1]],
+  },
+  delay: {
+    parts: [
+      node('Input', 'A', 0, 0),
+      node('Delay', '400 ms', 5, 0, 2, 2),
+      node('LED', 'LATE', 9, 0, 1),
+    ],
+    links: [
+      [0, 1],
+      [1, 2],
+    ],
+  },
+  counter: {
+    parts: [
+      node('Button', 'PRESS', 0, 0),
+      node('Counter', 'COUNT', 5, 0, 2),
+      node('LED', 'BIT 0', 9, 0, 1),
+    ],
+    links: [
+      [0, 1],
+      [1, 2],
+    ],
+  },
+  rgb: {
+    parts: [
+      node('Input', 'R', 0, 0),
+      node('Input', 'G', 0, 3),
+      node('Input', 'B', 0, 6),
+      node('RGBLed', 'COLOUR', 5, 0, 3, 3),
+    ],
+    links: [
+      [0, 3, 0, 0],
+      [1, 3, 0, 1],
+      [2, 3, 0, 2],
+    ],
+  },
+  display: {
+    parts: [node('DipSwitch', 'BINARY', 0, 0, 2, 4), node('Display', 'HEX', 6, 0, 3, 4)],
+    links: [
+      [0, 1, 0, 0],
+      [0, 1, 1, 1],
+      [0, 1, 2, 2],
+      [0, 1, 3, 3],
+    ],
+  },
+  bus: {
+    parts: [
+      node('Input', 'ONE', 0, 1),
+      node('Splitter', 'FAN OUT', 5, 1, 2, 4),
+      node('LED', 'L0', 10, 0, 1),
+      node('LED', 'L1', 10, 1, 1),
+      node('LED', 'L2', 10, 2, 1),
+      node('LED', 'L3', 10, 3, 1),
+    ],
+    links: [
+      [0, 1],
+      [1, 2, 0],
+      [1, 3, 1],
+      [1, 4, 2],
+      [1, 5, 3],
+    ],
+  },
+  merger: {
+    parts: [
+      node('Input', 'A', 0, 0),
+      node('Input', 'B', 0, 3),
+      node('Input', 'C', 0, 6),
+      node('Input', 'D', 0, 9),
+      node('Merger', 'ANY', 5, 1, 2, 4),
+      node('LED', 'L', 10, 1, 1),
+    ],
+    links: [
+      [0, 4, 0, 0],
+      [1, 4, 0, 1],
+      [2, 4, 0, 2],
+      [3, 4, 0, 3],
+      [4, 5],
+    ],
+  },
+  bar: {
+    parts: [node('DipSwitch', 'BINARY', 0, 0, 2, 4), node('BarGraph', 'LEVEL', 6, 0, 2, 4)],
+    links: [
+      [0, 1, 0, 0],
+      [0, 1, 1, 1],
+      [0, 1, 2, 2],
+      [0, 1, 3, 3],
+    ],
+  },
+  tone: {
+    parts: [
+      node('Input', '1', 0, 0),
+      node('Input', '2', 0, 3),
+      node('Input', '4', 0, 6),
+      node('Input', '8', 0, 9),
+      node('Tone', 'SOUND', 5, 0, 3, 4),
+    ],
+    links: [
+      [0, 4, 0, 0],
+      [1, 4, 0, 1],
+      [2, 4, 0, 2],
+      [3, 4, 0, 3],
+    ],
+  },
+  procedural: {
+    parts: [
+      node('Input', 'A', 0, 0),
+      node('Input', 'B', 0, 3),
+      node('Procedural', 'A && B', 5, 0, 2, 2),
+      node('LED', 'L', 9, 0, 1),
+    ],
+    links: [
+      [0, 2],
+      [1, 2, 0, 1],
+      [2, 3],
+    ],
+  },
+  motor: {
+    parts: [node('Input', 'ON', 0, 0), node('Motor', 'SPIN', 5, 0, 2)],
+    links: [[0, 1]],
+  },
+  seven: {
+    parts: [
+      node('DipSwitch', 'A–D', 0, 0, 2, 4),
+      node('DipSwitch', 'E–DP', 0, 8, 2, 4),
+      node('SevenSegment', 'DIGIT', 6, 2, 3, 4),
+    ],
+    links: [
+      [0, 2, 0, 0],
+      [0, 2, 1, 1],
+      [0, 2, 2, 2],
+      [0, 2, 3, 3],
+      [1, 2, 0, 4],
+      [1, 2, 1, 5],
+      [1, 2, 2, 6],
+      [1, 2, 3, 7],
+    ],
+  },
   lookup: {
     parts: [
       node('Input', 'A0', 0, 1),

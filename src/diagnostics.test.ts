@@ -1,7 +1,15 @@
 import { test, expect } from 'bun:test';
 import { checkCircuit } from './diagnostics';
 import type { CheckComponent, CheckWire } from './diagnostics';
-import { basics, componentGuides, recipes } from './help-content';
+import {
+  basics,
+  componentGuides,
+  courses,
+  exampleProjects,
+  quickStart,
+  recipes,
+} from './help-content';
+import { compileCircuit } from './circuit-dsl';
 const part = (name: string, id = 1): CheckComponent => ({
   id,
   constructor: { name },
@@ -57,6 +65,54 @@ test('every exposed component has complete localized reference content', () => {
       expect(copy.every((text) => text.length > 0)).toBe(true);
   }
   expect(basics.length).toBeGreaterThanOrEqual(6);
+  expect(quickStart.length).toBeGreaterThanOrEqual(4);
+});
+test('every example project and recipe program compiles to a wired board', () => {
+  const ids = new Set<string>();
+  for (const recipe of recipes) {
+    expect(ids.has(recipe.id)).toBe(false);
+    ids.add(recipe.id);
+    expect(['beginner', 'intermediate', 'advanced']).toContain(recipe.level);
+    if (!recipe.program) continue;
+    const program = compileCircuit(recipe.program);
+    expect({ id: recipe.id, errors: program.errors }).toEqual({ id: recipe.id, errors: [] });
+    expect(program.components.length).toBeGreaterThan(0);
+    expect(program.wires.length).toBeGreaterThan(0);
+    for (const part of recipe.parts ?? []) {
+      expect(componentGuides.some((guide) => guide.id === part)).toBe(true);
+    }
+  }
+  const projectIds = new Set<string>();
+  for (const project of exampleProjects) {
+    expect(projectIds.has(project.id)).toBe(false);
+    projectIds.add(project.id);
+    expect(project.steps.length).toBeGreaterThanOrEqual(2);
+    const program = compileCircuit(project.program);
+    expect({ id: project.id, errors: program.errors }).toEqual({ id: project.id, errors: [] });
+    expect(program.components.length).toBeGreaterThan(0);
+    expect(program.wires.length).toBeGreaterThan(0);
+    for (const part of project.parts) {
+      expect(componentGuides.some((guide) => guide.id === part)).toBe(true);
+    }
+    for (const copy of [project.title, project.summary, project.goal, project.expected]) {
+      expect(copy).toHaveLength(3);
+      expect(copy.every((text) => text.length > 0)).toBe(true);
+      expect(copy.slice(1).every((text) => /[\u0600-\u06ff]/.test(text))).toBe(true);
+    }
+  }
+});
+test('courses are ordered paths through real recipes', () => {
+  const recipeIds = new Set(recipes.map((recipe) => recipe.id));
+  expect(courses.length).toBeGreaterThanOrEqual(4);
+  const seen = new Set<string>();
+  for (const course of courses) {
+    expect(course.recipeIds.length).toBeGreaterThanOrEqual(3);
+    for (const id of course.recipeIds) {
+      expect(recipeIds.has(id)).toBe(true);
+      seen.add(id);
+    }
+  }
+  expect(seen.size).toBe(recipes.length);
 });
 test('unconnected input is advisory, not declared logically incorrect', () => {
   const gate = part('AND');

@@ -222,7 +222,7 @@ Right-click a gate symbol on the bottom toolbar to open its truth table. The sam
 
 ## Worked circuits
 
-The field guide contains these eight recipes with numbered steps, expected results, and optional dashed ghosts:
+The field guide contains 23 recipes with numbered steps, expected results, troubleshooting notes, optional dashed ghosts and an optional build button. The first eight are:
 
 1. **Your first working circuit** — Input → LED; `0` off, `1` on.
 2. **NAND or NOR from basic gates** — AND/OR + NOT; NAND `1,1,1,0`, NOR `1,0,0,0`.
@@ -233,7 +233,7 @@ The field guide contains these eight recipes with numbered steps, expected resul
 7. **Count controlled clock pulses** — Clock + ENABLE AND → Counter; roughly one count per second at 500 ms half-period, with a possible extra edge when enabling while the clock is high.
 8. **Tiny ROM lookup table** — address width 1, data width 4, data `A5`; address 0 → `1010`, address 1 → `0101`.
 
-Recipes never edit your circuit automatically. A ghost is a dashed reference only.
+The remaining recipes cover inverters, a push button, active-low and active-high gates compared side by side, XOR, delay, button counting, RGB colour, hex displays, bus fan-out and merge, bar graphs, Tone and Procedural expressions. The field guide also lists 14 complete example projects and five short courses that order the recipes from beginner to advanced. Ghosts are dashed references only. **Build this example** and **Build this project** buttons compile board code and replace the current board; the guide warns about this before the action.
 
 ---
 

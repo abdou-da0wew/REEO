@@ -348,11 +348,13 @@ Feedback is allowed and bounded by the update budget. A feedback loop can settle
 
 ### Quick guide
 
-The header's icon-only **Quick guide** button opens the **Circuit field guide**, a centered dialog with four tabs:
+The header's icon-only **Quick guide** button opens the **Circuit field guide**, a centered dialog with six tabs:
 
-- **Start here** — first principles and a short path into the editor.
-- **Every component** — searchable entries for all 19 component types, with behavior, wiring, an experiment, and cautions.
-- **Worked circuits** — eight recipes: first circuit, NAND/NOR, half adder, full adder, alarm, multiplexer, clock/counter, ROM lookup.
+- **Start here** — a four-step first run, good habits, and links into the courses or circuits.
+- **Every component** — searchable entries for all 31 component types, with behavior, wiring, an experiment, cautions, and links to circuits that use the part.
+- **Courses** — five ordered paths with progress saved on this device.
+- **Worked circuits** — 23 recipes from a first light to adders, timing, displays, buses, sound and ROM lookup. Each shows its level, goal, parts, steps, troubleshooting, expected result and optional build button.
+- **Example projects** — 14 complete boards with a one-click **Build this project** action.
 - **Check this circuit** — structural diagnostics for the current board/subcircuit.
 
 Search matches component names and description words. An exact component name wins over broad matches. Each component entry has **Locate on grid**; it highlights the component and closes the guide without editing the circuit.
@@ -361,7 +363,7 @@ The component picker also adds a small help button to every entry, which opens t
 
 ### Worked recipes and ghost diagrams
 
-Open a recipe from the field guide. A **guide dock** appears at the bottom-left with numbered steps, **Previous**, **Next**, and **Finish checklist**. The app does **not** place components or claim to verify that you followed the steps.
+Open a recipe from the field guide. A **guide dock** appears at the bottom-left with numbered steps, progress, **Previous**, **Next**, **Build this example**, and **Finish checklist**. Building an example compiles board code and replaces the current board; save first if you want to keep it. The guide does **not** claim to verify that you followed the steps.
 
 A faint dashed **ghost** of the intended circuit can be shown/hidden from the dock; **Fit guide** frames it. Ghosts are reference drawings only and never become simulated components, pins, or wires.
 

@@ -1,6 +1,6 @@
-import type { Recipe } from '../help-content';
+import type { Course, Recipe } from '../help-content';
 
-export type Tab = 'start' | 'components' | 'recipes' | 'check';
+export type Tab = 'start' | 'components' | 'courses' | 'recipes' | 'projects' | 'check';
 
 export const state: {
   backdrop: HTMLElement;
@@ -13,6 +13,8 @@ export const state: {
   query: string;
   lastFocus: HTMLElement | null;
   activeRecipe: Recipe | undefined;
+  activeCourse: Course | undefined;
+  completed: Set<string>;
   step: number;
   tipsEnabled: boolean;
   open?: (component?: string) => void;
@@ -28,6 +30,8 @@ export const state: {
   query: '',
   lastFocus: null,
   activeRecipe: undefined,
+  activeCourse: undefined,
+  completed: new Set<string>(),
   step: 0,
   tipsEnabled: true,
 };

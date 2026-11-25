@@ -1,4 +1,6 @@
 import { test, expect } from '@playwright/test';
+import { courses, exampleProjects, recipes } from '../src/help-content';
+import { compileCircuit } from '../src/circuit-dsl';
 async function start(page: import('@playwright/test').Page) {
   await page.goto('/');
   await expect(page.locator('body')).toHaveAttribute('data-reeo-ready', 'true');
@@ -18,7 +20,7 @@ test('full guide searches all components and pins a recipe without modifying the
   await expect(help.locator('article')).toHaveCount(1);
   await expect(help).toContainText('no binary output bus');
   await help.getByRole('button', { name: 'Worked circuits', exact: true }).click();
-  await expect(help.locator('article')).toHaveCount(8);
+  await expect(help.locator('article')).toHaveCount(recipes.length);
   await help.getByRole('searchbox').fill('half adder');
   await help
     .locator('article')
@@ -40,6 +42,105 @@ test('full guide searches all components and pins a recipe without modifying the
   await page.getByRole('button', { name: 'Fit guide', exact: true }).click();
   expect(await page.evaluate('components.length')).toBe(0);
 });
+test('start-page search finds circuits and projects across the guide', async ({ page }) => {
+  await start(page);
+  await page.evaluate('window.reeoHelp.open()');
+  const help = page.locator('#reeo-help-panel');
+  await help.getByRole('searchbox').fill('majority');
+  await expect(help.locator('article')).toHaveCount(1);
+  await expect(help.locator('article')).toContainText('Majority vote');
+  await help.getByRole('searchbox').fill('blinking beacon');
+  await expect(help.locator('article')).toHaveCount(1);
+  await expect(help.locator('article')).toContainText('Blinking beacon');
+  await help.getByRole('searchbox').fill('not a real circuit');
+  await expect(help.locator('article')).toHaveCount(0);
+  await expect(help.locator('#reeo-help-results')).toContainText('No matches');
+});
+
+test('courses start a guided build and every example project builds a real board', async ({
+  page,
+}) => {
+  await start(page);
+  await page.evaluate('window.reeoHelp.open()');
+  const help = page.locator('#reeo-help-panel');
+  await help.locator('nav').getByRole('button', { name: 'Courses', exact: true }).click();
+  await expect(help.locator('article')).toHaveCount(courses.length);
+  await expect(help.locator('article').first()).toContainText('Beginner');
+  await help.locator('article').first().getByRole('button', { name: 'Start course' }).click();
+  const dock = page.locator('#reeo-guide-dock');
+  await expect(dock).toBeVisible();
+  await expect(dock).toContainText('1/');
+  await dock.getByRole('button', { name: 'Build this example' }).click();
+  await expect(dock).toBeHidden();
+  expect(await page.evaluate('components.length')).toBe(2);
+
+  for (const project of exampleProjects) {
+    await page.evaluate('window.reeoHelp.open()');
+    await expect(help).toBeVisible();
+    await help
+      .locator('nav')
+      .getByRole('button', { name: 'Example projects', exact: true })
+      .click();
+    const card = help.locator('article').filter({ hasText: project.title[0] });
+    await expect(card).toHaveCount(1);
+    await card.getByRole('button', { name: 'Build this project' }).click();
+    await expect(help).toBeHidden();
+    const board = await page.evaluate('({parts: components.length, wires: wires.length})');
+    expect({ id: project.id, ...board }).toEqual({
+      id: project.id,
+      parts: expect.any(Number),
+      wires: expect.any(Number),
+    });
+    expect(board.parts).toBeGreaterThan(0);
+    expect(board.wires).toBeGreaterThan(0);
+  }
+});
+
+test('finishing a course step marks progress on this device', async ({ page }) => {
+  await start(page);
+  await page.evaluate('window.reeoHelp.open()');
+  const help = page.locator('#reeo-help-panel');
+  await help.locator('nav').getByRole('button', { name: 'Courses', exact: true }).click();
+  await help.locator('article').first().getByRole('button', { name: 'Start course' }).click();
+  const dock = page.locator('#reeo-guide-dock');
+  await expect(dock).toContainText('1/4');
+  await dock.getByRole('button', { name: 'Next step' }).click();
+  await dock.getByRole('button', { name: 'Next step' }).click();
+  await dock.getByRole('button', { name: 'Next step' }).click();
+  await expect(dock).toContainText('4/4');
+  await dock.getByRole('button', { name: 'Finish checklist' }).click();
+  await expect(dock).toBeHidden();
+  await expect(page.locator('.reeo-smart-tip')).toContainText('Circuit complete');
+
+  await page.evaluate('window.reeoHelp.open()');
+  await help.locator('nav').getByRole('button', { name: 'Courses', exact: true }).click();
+  await expect(help.locator('article').first()).toContainText('1 / 7');
+  await expect(help.locator('article').first()).toContainText('Completed');
+});
+
+test('every guided circuit builds the same number of parts and wires as its program', async ({
+  page,
+}) => {
+  await start(page);
+  const help = page.locator('#reeo-help-panel');
+  for (const recipe of recipes.filter((item) => item.program)) {
+    const expected = compileCircuit(recipe.program!);
+    expect(expected.wires.length).toBeGreaterThan(0);
+    await page.evaluate('window.reeoHelp.open()');
+    await help.locator('nav').getByRole('button', { name: 'Worked circuits', exact: true }).click();
+    const card = help.locator('article').filter({ hasText: recipe.title[0] });
+    await expect(card).toHaveCount(1);
+    await card.getByRole('button', { name: 'Build this example' }).click();
+    await expect(help).toBeHidden();
+    const built = await page.evaluate('({parts: components.length, wires: wires.length})');
+    expect({ id: recipe.id, ...built }).toEqual({
+      id: recipe.id,
+      parts: expected.components.length,
+      wires: expected.wires.length,
+    });
+  }
+});
+
 test('diagnostics explain a real unwired gate and locate it without changing wiring', async ({
   page,
 }) => {
